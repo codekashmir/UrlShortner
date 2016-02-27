@@ -1,6 +1,6 @@
 {
     "name": "codekashmir/UrlShortner",
-    "description": "UrlShortner package is an Api that serves short url for a lengthy url",
+    "description": "UrlShortner app serves short url for a lengthy url",
     "license": "MIT",
     "keywords": ["url shortner", "codekashmir"],
     "authors": [

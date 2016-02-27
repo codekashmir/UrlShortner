@@ -1,22 +1,47 @@
 <?php
+
 namespace CodeKashmir\UrlShortner;
-use Logger;
+
+use CodeKashmir\UrlShortner\Logger as Logger;
+
 class Db 
 {
-	const DB_NAME = '';
-	const DB_USER = '';
-	const DB_PASSWORD = '';
-	const DB_DRIVER = '';
-	const DB_HOST = '';
-	const DB_PORT = '';
-	function __construct()
-	{
-		try
-		{
+	/* mysql database config*/
+	const DB_NAME 		= 'us_db';
+	const DB_USER 		= 'aqib';
+	const DB_PASSWORD 	= 'password';
+	const DB_DRIVER 	= 'mysql';
+	const DB_HOST 		= 'localhost';
+	const DB_PORT 		= '3306';
 
-		}
-		catch(Exception $e)
-		{
+	/*database connection*/
+	private $dbh;
+
+	/**
+	 * [__construct create a connection to database]
+	 */
+	public function __construct()
+	{
+		$dbDriver 	= self::DB_DRIVER;
+		$dbName 	= self::DB_NAME;
+		$dbPass 	= self::DB_PASSWORD;
+		$dbPort 	= self::DB_PORT;
+		$dbUser 	= self::DB_USER;
+		$dbHost 	= self::DB_HOST;
+		try {
+			//options for pdo
+			$pdoOptions = 	[
+							\PDO::ATTR_PERSISTENT => true
+							];
+			//connect to db					
+			$dbh = new \PDO($dbDriver.':host='.$dbHost.';port='.$dbPort.';dbname='.$dbName,
+							$dbUser,
+							$dbPass,
+							$pdoOptions);
+			//catch for exceptions
+			$dbh->setAttribute( \PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION );
+		} catch(PDOException $ex) { 
+			//log exception
 			Logger:log("Exception thrown: "+$e->getMessage());
 		}
 	}	
