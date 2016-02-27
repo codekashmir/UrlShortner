@@ -1,0 +1,21 @@
+{
+    "name": "codekashmir/UrlShortner",
+    "description": "UrlShortner package is an Api that serves short url for a lengthy url",
+    "license": "MIT",
+    "keywords": ["url shortner", "codekashmir"],
+    "authors": [
+        {
+            "name": "Aqib Rashid Pandit",
+            "email": "aqi64u@gmail.com"
+        }
+    ],
+    "require": {},
+    "require-dev": {
+        "phpunit/phpunit": "4.8.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "CodeKashmir\\UrlShortner\\": "src"
+        }
+    }
+}
