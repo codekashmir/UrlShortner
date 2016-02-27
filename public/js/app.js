@@ -1,1 +1,1 @@
-var app = angular.module('UrlShortner', ['ngMaterial']);
+var app = angular.module('UrlShortner', ['ngMaterial', 'ngMessages']);

@@ -1,6 +1,3 @@
- @font-face {
-	font-family:"icomoon";
-	src:url("https://cdn.rawgit.com/angular/material/master/docs/app/fonts/icomoon.eot");
-	font-weight:normal;
-	font-style:normal;
+#urlShortnerForm {
+	margin-top: 100px;
 }
