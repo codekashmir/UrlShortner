@@ -9,28 +9,30 @@
   <!--
     HTML content here
   -->
-	<md-content>
-		<md-toolbar>
-	    	<div class="md-toolbar-tools">
-	       		Convert your lengthy Urls into shorter one.
-	    	</div>
-	    </md-toolbar>
-	    <div layout="row" layout-align="center" layout-gt-sm="row">
-	    	<form id="urlShortnerForm" name="urlShortnerForm" method="post" flex="80" flex-gt-xs="50">
-	    		<md-input-container class="md-block">
-				    <label>Enter your lengthy url</label>
-				    <input name="siteurl" ng-model="siteurl" required  type="url">
-				    <div ng-messages="urlShortnerForm.siteurl.$error" ng-show="urlShortnerForm.siteurl.$dirty">
-				    	<div ng-message="required">This is required!</div>
-				    	<div ng-message="url">Url is invalid</div>
-				    </div>
-  				</md-input-container>
-  				<div layout="row" layout-align="center">
-  					<md-button class="md-raised md-primary" type="submit">Make it Short</md-button>
-  				</div>
-	    	</form>
-	    </div>
-	</md-content>  
+  	<div flex="100" ng-controller="AppCtrl">
+		<md-content>
+			<md-toolbar>
+		    	<div class="md-toolbar-tools">
+		       		Convert your lengthy Urls into shorter one.
+		    	</div>
+		    </md-toolbar>
+		    <div layout="row" layout-align="center" layout-gt-sm="row">
+		    	<form id="urlShortnerForm" name="urlShortnerForm" method="post" flex="80" flex-gt-xs="50">
+		    		<md-input-container class="md-block">
+					    <label>Paste your lengthy url here</label>
+					    <input name="siteurl" ng-model="siteurl" type="url" required />
+					    <div ng-messages="urlShortnerForm.siteurl.$error" ng-show="urlShortnerForm.siteurl.$dirty">
+					    	<div ng-message="required">This is required!</div>
+					    	<div ng-message="url">Url is invalid</div>
+					    </div>
+	  				</md-input-container>
+	  				<div layout="row" layout-align="center">
+	  					<md-button class="md-raised md-primary" ng-click="submitURL()">Shorten</md-button>
+	  				</div>
+		    	</form>
+		    </div>
+		</md-content>  
+	</div>
   
 	<!-- Angular Material requires Angular.js Libraries -->
 	<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
