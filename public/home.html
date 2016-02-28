@@ -26,8 +26,15 @@
 					    	<div ng-message="url">Url is invalid</div>
 					    </div>
 	  				</md-input-container>
-	  				<div layout="row" layout-align="center">
-	  					<md-button class="md-raised md-primary" ng-click="submitURL()">Shorten</md-button>
+	  				<div layout="row" layout-align="center" ng-if="isShortening">
+	  				 	<md-progress-circular class="md-info" md-diameter="70">
+	  				 	</md-progress-circular>
+	  				</div>
+	  				<div layout="row" layout-align="center" ng-if="isShortening">
+	  					<span>Shortening ...</span>
+	  				</div>
+	  				<div layout="row" layout-align="center" ng-if="!isShortening">
+	  					<md-button class="md-raised md-primary" ng-click="submitURL()">Shorten URL</md-button>
 	  				</div>
 		    	</form>
 		    </div>
