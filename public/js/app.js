@@ -13,12 +13,12 @@ app.controller('AppCtrl',['$http','$scope', '$log', '$httpParamSerializerJQLike'
 			//send ajax request
 			$http({
 				method: 'POST',
-				url: '/',
+				url: 'index.php',
 				data: $httpParamSerializerJQLike(data),
 				headers: {'Content-Type': 'application/x-www-form-urlencoded'}
 			}).success(function(response){
 				$log.info(response);
-				$scope.isShortening = true;
+				$scope.isShortening = false;
 			}).error(function(response){
 				$scope.isShortening = false;
 			});

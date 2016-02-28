@@ -38,7 +38,6 @@ class Db
 							$dbUser,
 							$dbPass,
 							$pdoOptions);
-			Logger::log('connected to database');
 			//catch for exceptions
 			$dbh->setAttribute( \PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION );
 			$q = 	'CREATE TABLE IF NOT EXISTS `url`(
