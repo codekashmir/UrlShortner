@@ -1,4 +1,5 @@
 <?php
+print_r($_GET);
 if(!empty($_POST)){
 	require_once __DIR__.'/../vendor/autoload.php';
 	/*

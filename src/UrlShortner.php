@@ -33,12 +33,30 @@ class UrlShortner
 	 * [shortn method for shotening the url]
 	 * @return [array] [response containing shortened url]
 	 */
-	public function shortn(){
+	public function shortn()
+	{
 		$response = [
 			'shortnedUrl' => '',
 			'error' => false,
 			'errorMessage' => ''
 		];
-		
+		if($this->validateUrl($this->url)){
+			$response['error'] = true;
+			$response['errorMessage'] = "Invalid Url";
+			return json_encode($response);
+		}
+
+	}
+
+	public function validateUrl($url)
+	{
+		if(empty($url)){
+			return false;
+		}
+		if (!filter_var($url, FILTER_VALIDATE_URL) === false) {
+    		return true;
+		} else {
+    		return false;
+		}
 	}
 }
