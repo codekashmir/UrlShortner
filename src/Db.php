@@ -46,6 +46,8 @@ class Db
 					`long_url` VARCHAR(255),
 					`short_url` VARCHAR(255),
 					`clicks` BIGINT UNSIGNED DEFAULT 0,
+					`created_date` DATETIME,
+					`updated_date` DATETIME,
 					PRIMARY KEY (`id`))';
 			//create table if it doesn't exist
 			if($dbh->exec($q) !== 0) {

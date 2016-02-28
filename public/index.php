@@ -17,6 +17,7 @@ if(!empty($_POST)){
 }
 if(!empty($_GET['q'])) 
 {
+	print_r($_GET['q']);
 	//find actual url
 	$url = $urlShortner->findActualUrl($_GET['q']);
 	if($url){
