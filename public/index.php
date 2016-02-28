@@ -8,11 +8,11 @@ if(!empty($_POST)){
 	/*
 	 instantiate Url shortener service
 	*/
-	$urlShortner = new CodeKashmir\UrlShortner\UrlShortner();
+	$urlShortner = new CodeKashmir\UrlShortner\UrlShortner($_POST['siteurl'], $db->dbh);
 	/*
 		output shortened Url
 	*/
-	echo $urlShortner->shortn($_POST['siteurl']);
+	echo $urlShortner->shortn();
 	die();
 }
 

@@ -15,7 +15,7 @@ class Db
 	const DB_PORT 		= '3306';
 
 	/*database connection*/
-	private $dbh;
+	public  $dbh;
 
 	/**
 	 * [__construct create a connection to database]
@@ -38,11 +38,21 @@ class Db
 							$dbUser,
 							$dbPass,
 							$pdoOptions);
+			Logger::log('connected to database');
 			//catch for exceptions
 			$dbh->setAttribute( \PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION );
-		} catch(PDOException $ex) { 
-			//log exception
-			Logger:log("Exception thrown: "+$e->getMessage());
+			$q = 	'CREATE TABLE IF NOT EXISTS `url`(
+					`id` BIGINT UNSIGNED AUTO_INCREMENT NOT NULL,
+					`long_url` VARCHAR(255),
+					`short_url` VARCHAR(255),
+					`clicks` BIGINT UNSIGNED DEFAULT 0,
+					PRIMARY KEY (`id`))';
+			//create table if it doesn't exist
+			if($dbh->exec($q) !== 0) {
+				Logger::log("Unable to create table url");
+			}
+		} catch(\PDOException $ex) { 
+			Logger::log("Exception thrown: "+$ex->getMessage());
 		}
 	}	
 }
