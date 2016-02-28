@@ -5,13 +5,7 @@ namespace CodeKashmir\UrlShortner;
 use CodeKashmir\UrlShortner\Logger as Logger;
 
 class UrlShortner
-{
-	/**
-	 * [$url url to be shortened]
-	 * @var [string]
-	 */
-	private $url;
-	
+{	
 	/**
 	 * [$dbh handle to database]
 	 * @var [context]
@@ -23,9 +17,8 @@ class UrlShortner
 	 * @param [type] $url [url to be shortened]
 	 * @param [type] $dbh [handle to database]
 	 */
-	public function __construct($url, $dbh)
+	public function __construct($dbh)
 	{
-		$this->url = $url;
 		$this->dbh = $dbh;
 	}
 
@@ -33,14 +26,14 @@ class UrlShortner
 	 * [shortn method for shotening the url]
 	 * @return [array] [response containing shortened url]
 	 */
-	public function shortn()
+	public function shortn($url)
 	{
 		$response = [
 			'shortnedUrl' => '',
 			'error' => false,
 			'errorMessage' => ''
 		];
-		if($this->validateUrl($this->url)){
+		if($this->validateUrl($url)){
 			$response['error'] = true;
 			$response['errorMessage'] = "Invalid Url";
 			return json_encode($response);
@@ -48,6 +41,11 @@ class UrlShortner
 
 	}
 
+	/**
+	 * [validateUrl]
+	 * @param  [string] $url 
+	 * @return [boolean]      [true if valid url]
+	 */
 	public function validateUrl($url)
 	{
 		if(empty($url)){
@@ -58,5 +56,10 @@ class UrlShortner
 		} else {
     		return false;
 		}
+	}
+
+	public function findActualUrl($url)
+	{
+
 	}
 }
