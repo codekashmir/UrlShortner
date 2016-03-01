@@ -34,12 +34,12 @@ class Db
 							\PDO::ATTR_PERSISTENT => true
 							];
 			//connect to db					
-			$dbh = new \PDO($dbDriver.':host='.$dbHost.';port='.$dbPort.';dbname='.$dbName,
+			$this->dbh = new \PDO($dbDriver.':host='.$dbHost.';port='.$dbPort.';dbname='.$dbName,
 							$dbUser,
 							$dbPass,
 							$pdoOptions);
 			//catch for exceptions
-			$dbh->setAttribute( \PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION );
+			$this->dbh->setAttribute( \PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION );
 			$q = 	'CREATE TABLE IF NOT EXISTS `url`(
 					`id` BIGINT UNSIGNED AUTO_INCREMENT NOT NULL,
 					`long_url` VARCHAR(255),
@@ -49,7 +49,7 @@ class Db
 					`updated_date` DATETIME,
 					PRIMARY KEY (`id`))';
 			//create table if it doesn't exist
-			if($dbh->exec($q) !== 0) {
+			if($this->dbh->exec($q) !== 0) {
 				Logger::log("Unable to create table url");
 			}
 		} catch(\PDOException $ex) { 

@@ -19,8 +19,8 @@ if(!empty($_GET['q']))
 {
 	print_r($_GET['q']);
 	//find actual url
-	$url = $urlShortner->findActualUrl($_GET['q']);
-	if($url){
+	$shortUrl = $urlShortner->findActualUrl($_GET['q']);
+	if($shortUrl){
 		//redirect
 		header('location:'+$url);
 		die();
