@@ -18,9 +18,15 @@ app.controller('AppCtrl',['$http','$scope', '$log', '$httpParamSerializerJQLike'
 				headers: {'Content-Type': 'application/x-www-form-urlencoded'}
 			}).success(function(response){
 				$log.info(response);
+				if(!response.error) {
+					$scope.shortUrl = response.shortnedUrl;
+				} else {
+					$scope.shortUrl = response.errorMessage;
+				}
 				$scope.isShortening = false;
 			}).error(function(response){
 				$scope.isShortening = false;
+				$scope.shortUrl = "Unable to shorten the Url";
 			});
 		}
 	}

@@ -5,7 +5,7 @@ namespace CodeKashmir\UrlShortner;
 use CodeKashmir\UrlShortner\Logger as Logger;
 
 class UrlShortner
-{	
+{
 	/**
 	 * [$dbh handle to database]
 	 * @var [context]
@@ -22,8 +22,7 @@ class UrlShortner
 	public function __construct($dbh)
 	{
 		$this->dbh = $dbh;
-	}
-
+	}	
 	/**
 	 * [shortn method for shotening the url]
 	 * @return [array] [response containing shortened url]
@@ -35,19 +34,19 @@ class UrlShortner
 			'error' => false,
 			'errorMessage' => ''
 		];
-		
+
 		if (!$this->validateUrl($url)) {
 			$response['error'] = true;
 			$response['errorMessage'] = "Invalid Url";
 			return json_encode($response);
 		}
-		
+
 		$url = trim($url);
 
 		if (($id = $this->isUrlExists($url)) !== false) {
-			$response['shortnedUrl'] = $this->getShortUrl($id);
+			$response['shortnedUrl'] = $this->getShortUrl($id) ;
 			$response['error'] = false;
-			return $response;
+			return json_encode($response);
 		}
 
 		$id = $this->insertUrlInDb($url);
@@ -59,19 +58,21 @@ class UrlShortner
 		}
 
 		$shortUrl = $this->insertShortCodeInDb($id, $this->strToBaseConvert($id+$this->idOffset));
-		
+
 		if ($shortUrl === false) {
 			$response['error'] = true;
 			$response['errorMessage'] = 'Unable to create shortcode';
 			return $response;
 		}
 		
-		return $shortUrl;
+		$response['shortnedUrl'] = $shortUrl;
+		
+		return json_encode($response);
 	}
 
 	/**
 	 * [validateUrl]
-	 * @param  [string] $url 
+	 * @param  [string] $url
 	 * @return [boolean]      [true if valid url]
 	 */
 	public function validateUrl($url)
@@ -88,24 +89,21 @@ class UrlShortner
 
 	/**
 	 * [isUrlExists return false if url doesn't exist or its id in db]
-	 * @param  [string]  $url 
-	 * @return boolean or integer      
+	 * @param  [string]  $url
+	 * @return boolean or integer
 	 */
 	public function isUrlExists($url)
 	{
-		try {
-			$q = 'SELECT * FROM `url` WHERE `long_url` = :long_url';
-			$stmt = $this->dbh->prepare($q);
-			$stmt->bindParam(':long_url', $url);
-			if (!$stmt->execute()) {
-				return false;
-			} 
-			$rset = $stmt->fetch(\PDO::FETCH_ASSOC);
-			if (empty($rset)) {
-				return false;
-			}
-		} catch(\PDOException $ex) {
-			return $ex->getMessage();
+		
+		$q = 'SELECT * FROM `url` WHERE `long_url` = :long_url';
+		$stmt = $this->dbh->prepare($q);
+		$stmt->bindParam(':long_url', $url);
+		if (!$stmt->execute()) {
+			return false;
+		}
+		$rset = $stmt->fetch(\PDO::FETCH_ASSOC);
+		if (empty($rset)) {
+			return false;
 		}
 		return $rset['id'];
 	}
@@ -117,7 +115,7 @@ class UrlShortner
 	 * @param  integer $tobase   [description]
 	 * @return [type]            [description]
 	 */
-	public function strToBaseConvert($str, $frombase=10, $tobase=36) 
+	public function strToBaseConvert($str, $frombase=10, $tobase=36)
 	{
 	    $str = trim($str);
 	    if (intval($frombase) != 10) {
@@ -145,8 +143,8 @@ class UrlShortner
 
 	/**
 	 * [insertUrlInDb insert new url in database and get it's primary key]
-	 * @param  [string] $url 
-	 * @return [boolean or integer]      
+	 * @param  [string] $url
+	 * @return [boolean or integer]
 	 */
 	public function insertUrlInDb($url)
 	{
@@ -167,21 +165,58 @@ class UrlShortner
 
 	public function insertShortCodeInDb($id, $shortCode)
 	{
-		$q = 'UPDATE `url` SET `short_url` = :short_url WHERE `id` = :id';
+		$q = 'UPDATE `url` SET `short_url` = :short_url, `short_code` = :short_code WHERE `id` = :id';
 		$stmt = $this->dbh->prepare($q);
-		$prefix = $_SERVER['REQUEST_URI'];
-		$values = [	':short_url' => $prefix.'/'.$shortCode,
-					':id' => $id];
+		$prefix = 'http://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'];
+		$prefix = str_replace("index.php", "", $prefix);
+		$values = [	':short_url' => $prefix.$shortCode,
+					':id' => $id,
+					':short_code' => $shortCode];
 		if (!$stmt->execute($values)) {
 			return false;
 		}
-		return true;
+		return $prefix.$shortCode;
 	}
 
-
-
-	public function findActualUrl($url)
+	public function getShortUrl($id) 
 	{
-		
+		$q = 'SELECT * FROM `url` WHERE id=:id LIMIT 1';
+		$stmt = $this->dbh->prepare($q);
+		$stmt->bindParam(':id', $id);
+		if(!$stmt->execute()) {
+			return false;
+		}
+		$rset = $stmt->fetch(\PDO::FETCH_ASSOC);
+		if(empty($rset)) {
+			return false;
+		}
+		return $rset['short_url'];
+	}
+
+	public function findActualUrl($shortCode)
+	{
+		$q = 'SELECT * FROM `url` WHERE short_code=:short_code LIMIT 1';
+		$stmt = $this->dbh->prepare($q);
+		$stmt->bindParam(':short_code', trim($shortCode));
+		if(!$stmt->execute()) {
+			return false;
+		}
+		$rset = $stmt->fetch(\PDO::FETCH_ASSOC);
+		if(empty($rset)) {
+			return false;
+		}
+		//update clicks
+		$this->updateClicks($shortCode);
+		return $rset['long_url'];
+	}
+
+	private function updateClicks($shortCode) 
+	{
+		$q = 'UPDATE `url` SET clicks=clicks+1 WHERE short_code=:short_code LIMIT 1';
+		$stmt = $this->dbh->prepare($q);
+		$stmt->bindParam(':short_code', trim($shortCode));
+		if(!$stmt->execute()) {
+			return false;
+		}
 	}
 }

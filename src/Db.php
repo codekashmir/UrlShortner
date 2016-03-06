@@ -44,6 +44,7 @@ class Db
 					`id` BIGINT UNSIGNED AUTO_INCREMENT NOT NULL,
 					`long_url` VARCHAR(255),
 					`short_url` VARCHAR(255),
+					`short_code` VARCHAR(255),
 					`clicks` BIGINT UNSIGNED DEFAULT 0,
 					`created_date` DATETIME,
 					`updated_date` DATETIME,

@@ -1,5 +1,6 @@
 <?php
-if(!empty($_POST)){
+
+if( !(empty($_POST) && empty($_GET)) ) {
 	require_once __DIR__.'/../vendor/autoload.php';
 	/*
 	connect to database
@@ -9,23 +10,30 @@ if(!empty($_POST)){
 	 instantiate Url shortener service
 	*/
 	$urlShortner = new CodeKashmir\UrlShortner\UrlShortner($db->dbh);
+}
+
+if(!empty($_POST)){
 	/*
 		output shortened Url
 	*/
 	echo $urlShortner->shortn($_POST['siteurl']);
 	die();
 }
-if(!empty($_GET['q'])) 
-{
-	print_r($_GET['q']);
+
+$isUrlExists = true;
+
+if(!empty($_GET['q'])) {
 	//find actual url
 	$shortUrl = $urlShortner->findActualUrl($_GET['q']);
-	if($shortUrl){
+	if($shortUrl) {
 		//redirect
-		header('location:'+$url);
+		header('location:'.$shortUrl);
 		die();
+	} else {
+		$isUrlExists = false;
 	}
 }
+
 ?>
 <html lang="en" >
 <head>
@@ -65,6 +73,17 @@ if(!empty($_GET['q']))
 	  				<div layout="row" layout-align="center" ng-if="!isShortening">
 	  					<md-button class="md-raised md-primary" ng-click="submitURL()">Shorten URL</md-button>
 	  				</div>
+	  				<div layout="row" layout-align="center" ng-if="!isShortening">
+	  					{{shortUrl}}
+	  				</div>
+	  				<?php if(!$isUrlExists) {
+	  				?>
+	  					<div layout="row" layout-align="center">
+	  						Shortcode doesn't exist
+	  					</div>
+	  				<?php	
+	  					} 
+	  				?>
 		    	</form>
 		    </div>
 		</md-content>  
